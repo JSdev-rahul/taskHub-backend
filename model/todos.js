@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 
 const TodosSchema = new mongoose.Schema({
   title: {
@@ -31,12 +31,12 @@ const TodosSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-});
+})
 TodosSchema.set("toJSON", {
   virtuals: true,
   versionKey: false,
   transform: function (doc, ret) {
-    delete ret._id;
+    delete ret._id
   },
-});
-module.exports = mongoose.model("todos", TodosSchema);
+})
+module.exports = mongoose.model("todos", TodosSchema)

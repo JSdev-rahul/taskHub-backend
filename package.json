@@ -1,13 +1,14 @@
 {
-  "name": "todo_mern",
+  "name": "taskhub",
   "version": "1.0.0",
-  "description": "",
+  "description": "This is a backend server application built with Node.js, Express.js, and MongoDB that provides APIs for managing tasks. It allows users to perform CRUD (Create, Read, Update, Delete) operations on tasks, including creating new tasks, retrieving tasks, updating task details, and deleting tasks.",
   "main": "index.js",
+  "type": "commonjs",
   "scripts": {
     "start": "nodemon index.js",
     "build": "npm run build"
   },
-  "author": "",
+  "author": "rahul choudhary",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.6.7",
@@ -28,5 +29,8 @@
     "otp-generator": "^4.0.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5"
   }
 }

@@ -1,6 +1,6 @@
-const transporter = require("../config/mailerConfig");
-const ejs = require("ejs");
-const path = require("path");
+const transporter = require("../config/mailerConfig")
+const ejs = require("ejs")
+const path = require("path")
 
 function emailOTPMiddleware(userName, email, otp) {
   // Render the EJS template
@@ -9,8 +9,8 @@ function emailOTPMiddleware(userName, email, otp) {
     { otp: otp, userName: userName },
     (err, data) => {
       if (err) {
-        console.error("Error rendering email template:", err);
-        return;
+        console.error("Error rendering email template:", err)
+        return
       }
 
       // Send the email with the rendered HTML content
@@ -23,15 +23,15 @@ function emailOTPMiddleware(userName, email, otp) {
         },
         (error, info) => {
           if (error) {
-            console.error("Error sending email:", error);
+            console.error("Error sending email:", error)
           } else {
-            console.log("Email sent successfully:", info);
-            next();
+            console.log("Email sent successfully:", info)
+            next()
           }
         }
-      );
+      )
     }
-  );
+  )
 }
 
-module.exports = emailOTPMiddleware;
+module.exports = emailOTPMiddleware

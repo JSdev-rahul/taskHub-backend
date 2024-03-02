@@ -1,61 +1,61 @@
-const users = require("../model/users");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-const emailOTPMiddleware = require("../middleware/emailOtpMiddleware");
-const otpCtrl = require("./otp");
-const otpGenerator = require("otp-generator");
-const mySceretKey = process.env.API_SECRET_KEY;
-const { jwtDecode } = require("jwt-decode");
-const sendEmail = require("../middleware/emailMiddleware");
-const saveImageToFileSystem = require("../utils/saveImageToFileSystem");
+const users = require("../model/users")
+const jwt = require("jsonwebtoken")
+const bcrypt = require("bcrypt")
+const emailOTPMiddleware = require("../middleware/emailOtpMiddleware")
+const otpCtrl = require("./otp")
+const otpGenerator = require("otp-generator")
+const mySceretKey = process.env.API_SECRET_KEY
+const { jwtDecode } = require("jwt-decode")
+const sendEmail = require("../middleware/emailMiddleware")
+const saveImageToFileSystem = require("../utils/saveImageToFileSystem")
 
 const LoginCtrl = {
   login: async (req, res) => {
     try {
-      const { email, password } = req.body;
-      const user = await users.findOne({ email });
+      const { email, password } = req.body
+      const user = await users.findOne({ email })
 
-      const userName = user?.name;
+      const userName = user?.name
       if (!user) {
-        return res.status(404).json({ message: "user not found" });
+        return res.status(404).json({ message: "user not found" })
       }
-      const passwordMatch = await bcrypt.compare(password, user.password);
+      const passwordMatch = await bcrypt.compare(password, user.password)
 
       if (!passwordMatch) {
-        return res.status(404).json({ message: "password not match " });
+        return res.status(404).json({ message: "password not match " })
       }
       const token = jwt.sign({ userId: user._id }, mySceretKey, {
         expiresIn: "1h",
-      });
-      user.password = undefined;
+      })
+      user.password = undefined
       const otp = otpGenerator.generate(4, {
         lowerCaseAlphabets: false,
         digits: true,
         upperCaseAlphabets: false,
         specialChars: false,
-      });
+      })
 
-      otpCtrl.savedOtp(email, otp);
-      emailOTPMiddleware(userName, email, otp);
-      res.status(200).json({ token, user, message: "Login Successfull" });
+      otpCtrl.savedOtp(email, otp)
+      emailOTPMiddleware(userName, email, otp)
+      res.status(200).json({ token, user, message: "Login Successfull" })
     } catch (error) {
-      res.status(500).json({ message: "Login failed" });
+      res.status(500).json({ message: "Login failed" })
     }
   },
 
   googleAuthLogIn: async (req, res) => {
     try {
-      const { Gtoken } = req.body;
+      const { Gtoken } = req.body
       if (!Gtoken) {
-        return res.status(400).json({ message: "Token is required" });
+        return res.status(400).json({ message: "Token is required" })
       }
-      const userInfo = jwtDecode(Gtoken);
+      const userInfo = jwtDecode(Gtoken)
 
-      const { email, name, picture } = userInfo;
+      const { email, name, picture } = userInfo
 
-      let user = await users.findOne({ email });
+      let user = await users.findOne({ email })
       if (!user) {
-        const avatarPath = await saveImageToFileSystem(picture, email);
+        const avatarPath = await saveImageToFileSystem(picture, email)
         user = await new users({
           email,
           name,
@@ -63,22 +63,20 @@ const LoginCtrl = {
           gender: "",
           password: "", // Assuming you handle password separately
           avtar: avatarPath, // Corrected property name
-        }).save();
-        sendEmail(user);
+        }).save()
+        sendEmail(user)
       }
       const token = jwt.sign({ userId: user._id }, mySceretKey, {
         expiresIn: "1h",
-      });
-      user.password = undefined;
+      })
+      user.password = undefined
 
-      return res
-        .status(200)
-        .json({ token, user, message: "Login Successfull" });
+      return res.status(200).json({ token, user, message: "Login Successfull" })
     } catch (error) {
-      console.error("Error:", error);
-      return res.status(500).json({ message: "Internal Server Error" });
+      console.error("Error:", error)
+      return res.status(500).json({ message: "Internal Server Error" })
     }
   },
-};
+}
 
-module.exports = LoginCtrl;
+module.exports = LoginCtrl

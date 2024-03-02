@@ -1,0 +1,17 @@
+/.git
+/.svn
+/.hg
+/node_modules
+
+
+# Ignore .env files
+.env
+
+# Ignore build and distribution directories
+dist/
+build/
+
+# Ignore Visual Studio Code settings
+.vscode/
+README.md
+.gitignore

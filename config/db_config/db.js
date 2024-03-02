@@ -1,21 +1,36 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 
 const Connection = async () => {
   const MONGODB_URI = process.env.MONGODB_URI
 
-  mongoose.connect(MONGODB_URI);
+  // 1. Approch to connect with mongoDb
 
-  mongoose.connection.on("connected", () => {
-    console.log("database connected succesfully");
-  });
+  try {
+    mongoose.connect(MONGODB_URI)
 
-  mongoose.connection.on("disconnected", () => {
-    console.log("database disconnected");
-  });
+    mongoose.connection.on("connected", () => {
+      console.log("Database connected successfully")
+    })
 
-  mongoose.connection.on("error", (err) => {
-    console.log("err occured", err.message);
-  });
-};
+    mongoose.connection.on("disconnected", () => {
+      console.log("Database disconnected")
+    })
 
-module.exports = Connection;
+    mongoose.connection.on("error", (err) => {
+      console.error("Error occurred:", err.message)
+    })
+  } catch (error) {
+    console.error("Error connecting to MongoDB:", error)
+  }
+}
+
+module.exports = Connection
+
+// 2. approch -->  inside a try catch use await only and grab response and print
+
+// try {
+//   const connectionInstanse = await mongoose.connect(MONGODB_URI)
+//   console.log(connectionInstanse.connection)
+// } catch (error) {
+//   console.error("Error connecting to MongoDB:", error)
+// }

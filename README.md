@@ -1,6 +1,7 @@
 # Node.js Express.js MongoDB Server Task Application
 
 ## Description
+
 This is a backend server application built with Node.js, Express.js, and MongoDB that provides APIs for managing tasks. It allows users to perform CRUD (Create, Read, Update, Delete) operations on tasks, including creating new tasks, retrieving tasks, updating task details, and deleting tasks.
 
 ## Features
@@ -23,59 +24,65 @@ This is a backend server application built with Node.js, Express.js, and MongoDB
 - **nodemailer:** Library for sending emails from Node.js applications.
 - **nodemon:** Utility that automatically restarts the server when changes are detected in the file system.
 - **cors:** Middleware for enabling Cross-Origin Resource Sharing (CORS) in Express.js applications.
-- **body-parser:** Middleware for parsing incoming request bodies in Express.js applications.
--**morgon:** HTTP request logger middleware for node.js
+- **body-parser:** Middleware for parsing incoming request bodies in Express.js applications. -**morgon:** HTTP request logger middleware for node.js
 
 ## Setup Instructions
- 
+
 ### Installation
 
 Use the package manager [npm] to install all dependencies.
 
 ```bash
-npm install 
+npm install
 ```
 
 ### To start the server, run the following command:
 
 ```bash
-npm start 
+npm start
 ```
-
 
 ## API Routes
 
-- **GET /api/todos/:id:** 
-  - Description: Get all todos for a specific user. 
+- **GET /api/todos/:id:**
+
+  - Description: Get all todos for a specific user.
   - Authorization: Requires JWT token.
 
-- **POST /api/todos:** 
-  - Description: Create a new todo. 
+- **POST /api/todos:**
+
+  - Description: Create a new todo.
   - Authorization: Requires JWT token.
 
-- **DELETE /api/todos/:id:** 
-  - Description: Delete a todo by ID. 
+- **DELETE /api/todos/:id:**
+
+  - Description: Delete a todo by ID.
   - Authorization: Requires JWT token.
 
-- **PATCH /api/todos/:id:** 
-  - Description: Update a todo by ID. 
+- **PATCH /api/todos/:id:**
+
+  - Description: Update a todo by ID.
   - Authorization: Requires JWT token.
 
-- **GET /api/users:** 
-  - Description: Get all users. 
+- **GET /api/users:**
+
+  - Description: Get all users.
   - Authorization: Requires JWT token.
 
-- **POST /api/users:** 
-  - Description: Create a new user. 
+- **POST /api/users:**
+
+  - Description: Create a new user.
   - Authorization: Requires JWT token and file upload.
 
-- **DELETE /api/users/:id:** 
-  - Description: Delete a user account by ID. 
+- **DELETE /api/users/:id:**
+
+  - Description: Delete a user account by ID.
   - Authorization: Requires JWT token.
 
-- **PATCH /api/users/:id:** 
-  - Description: Update user profile by ID. 
+- **PATCH /api/users/:id:**
+
+  - Description: Update user profile by ID.
   - Authorization: Requires JWT token and file upload.
 
-- **POST /api/login:** 
+- **POST /api/login:**
   - Description: Login user and generate JWT token.

@@ -1,4 +1,4 @@
-const users = require("../model/users");
+const users = require("../model/users")
 
 const seedUserDummyData = async () => {
   // Generate dummy data here (similar to the previous example)
@@ -16,17 +16,17 @@ const seedUserDummyData = async () => {
       password: "securepassword",
     },
     // Add more user objects as needed
-  ];
+  ]
 
   try {
-    await users.deleteMany({});
+    await users.deleteMany({})
 
     // Insert dummy users into the database
-    await users.insertMany(dummyUsers);
-    console.log("Dummy data seeded successfully");
+    await users.insertMany(dummyUsers)
+    console.log("Dummy data seeded successfully")
   } catch (error) {
-    console.error("Error seeding dummy data:", error);
+    console.error("Error seeding dummy data:", error)
   }
-};
+}
 
-module.exports = seedUserDummyData;
+module.exports = seedUserDummyData

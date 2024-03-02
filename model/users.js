@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -9,7 +9,7 @@ const UserSchema = new mongoose.Schema({
   gender: {
     type: String,
     // required: [true, "Gender is required"],
-    enum: ["male", "female",''],
+    enum: ["male", "female", ""],
     trim: true,
   },
   email: {
@@ -28,7 +28,7 @@ const UserSchema = new mongoose.Schema({
     required: true,
   },
   role: {
-    default:'user',
+    default: "user",
     type: String,
     // requiured: [true, "role must be include"],
     enum: ["user", "admin"],
@@ -43,14 +43,14 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-});
+})
 
 UserSchema.set("toJSON", {
   virtuals: true,
   versionKey: false,
   transform: function (doc, ret) {
-    delete ret._id;
+    delete ret._id
   },
-});
+})
 
-module.exports = mongoose.model("User", UserSchema);
+module.exports = mongoose.model("User", UserSchema)

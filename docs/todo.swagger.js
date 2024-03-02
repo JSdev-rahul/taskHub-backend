@@ -135,4 +135,3 @@
  *           format: date-time
  *           description: Due date and time of the todo
  */
-
