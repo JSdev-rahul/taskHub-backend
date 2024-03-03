@@ -51,7 +51,7 @@
  *               password:
  *                 type: string
  *                 description: User's password
- *               avtar:
+ *               avatar:
  *                 type: string
  *                 format: binary
  *                 description: User's avatar image

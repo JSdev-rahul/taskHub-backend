@@ -2,10 +2,11 @@ const transporter = require("../config/mailerConfig")
 const ejs = require("ejs")
 const path = require("path")
 
-function sendEmail(user) {
+function sendOtpToEmail(userName, email, otp) {
+  // Render the EJS template
   ejs.renderFile(
-    path.join(__dirname, "../views/greetingEmailTemplate.ejs"),
-    { user },
+    path.join(__dirname, "../views/emailTemplate.ejs"),
+    { otp: otp, userName: userName },
     (err, data) => {
       if (err) {
         console.error("Error rendering email template:", err)
@@ -16,22 +17,21 @@ function sendEmail(user) {
       transporter.sendMail(
         {
           from: "rahul.choudhary7813@gmail.com",
-          to: user?.email,
-          subject: "Welcome to Task Hub!",
+          to: email,
+          subject: "Verify Your Email Address",
           html: data,
         },
         (error, info) => {
           if (error) {
             console.error("Error sending email:", error)
-            // return res.status(500).json({ error: "Failed to send email. Please try again later." });
+          } else {
+            console.log("Email sent successfully:", info)
+            next()
           }
-          console.log("Email sent successfully:", info)
-          next()
         }
       )
     }
   )
-  // const { to, subject, text } = req.body;
 }
 
-module.exports = sendEmail
+module.exports = sendOtpToEmail

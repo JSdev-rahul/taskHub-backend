@@ -1,13 +1,14 @@
 const users = require("../model/users")
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
-const emailOTPMiddleware = require("../middleware/emailOtpMiddleware")
+const sendOtpToEmail = require("../utils/sendOtpToEmail")
 const otpCtrl = require("./otp")
 const otpGenerator = require("otp-generator")
-const mySceretKey = process.env.API_SECRET_KEY
+const accessTokenSecretKey = process.env.ACCESS_TOKEN_SECRET
+const accessTokenExpiry = process.env.ACCESS_TOKEN_EXPIRY
 const { jwtDecode } = require("jwt-decode")
-const sendEmail = require("../middleware/emailMiddleware")
 const saveImageToFileSystem = require("../utils/saveImageToFileSystem")
+const sendGreetingEmail = require("../utils/greetingEmail")
 
 const LoginCtrl = {
   login: async (req, res) => {
@@ -24,7 +25,7 @@ const LoginCtrl = {
       if (!passwordMatch) {
         return res.status(404).json({ message: "password not match " })
       }
-      const token = jwt.sign({ userId: user._id }, mySceretKey, {
+      const token = jwt.sign({ userId: user._id }, accessTokenSecretKey, {
         expiresIn: "1h",
       })
       user.password = undefined
@@ -36,7 +37,7 @@ const LoginCtrl = {
       })
 
       otpCtrl.savedOtp(email, otp)
-      emailOTPMiddleware(userName, email, otp)
+      sendOtpToEmail(userName, email, otp)
       res.status(200).json({ token, user, message: "Login Successfull" })
     } catch (error) {
       res.status(500).json({ message: "Login failed" })
@@ -62,12 +63,12 @@ const LoginCtrl = {
           role: "user",
           gender: "",
           password: "", // Assuming you handle password separately
-          avtar: avatarPath, // Corrected property name
+          avatar: avatarPath, // Corrected property name
         }).save()
-        sendEmail(user)
+        sendGreetingEmail(user)
       }
-      const token = jwt.sign({ userId: user._id }, mySceretKey, {
-        expiresIn: "1h",
+      const token = jwt.sign({ userId: user._id }, accessTokenSecretKey, {
+        expiresIn: accessTokenExpiry,
       })
       user.password = undefined
 

@@ -1,4 +1,4 @@
-const sendEmail = require("../middleware/emailMiddleware")
+const sendGreetingEmail = require("../utils/greetingEmail")
 const users = require("../model/users")
 const hashedPassword = require("../utils/hashPassword")
 const renameFileWithExtension = require("../utils/renameFileWithExtension")
@@ -12,12 +12,15 @@ const UserCtrl = {
         if (isExit.password == "") {
           const id = isExit?._id
           const newPath = await renameFileWithExtension(req.file)
+
+          console.log("newPath", newPath)
+
           const result = await users.findByIdAndUpdate(
             id,
             {
               ...req.body,
-              password: await hashedPassword(req.body.password),
-              avtar: newPath.replace("uploads/", ""),
+              password: hashedPassword(req.body.password),
+              avatar: newPath.replace("uploads/", ""),
             },
             {
               new: true,
@@ -29,12 +32,13 @@ const UserCtrl = {
       }
 
       const newPath = await renameFileWithExtension(req.file)
+      console.log("newPath", newPath)
       const savedUser = await new users({
         ...req.body,
-        password: await hashedPassword(req.body.password),
-        avtar: newPath?.replace("uploads/", ""),
+        password: hashedPassword(req.body.password),
+        avatar: newPath?.replace("uploads/", ""),
       }).save()
-      sendEmail(savedUser)
+      sendGreetingEmail(savedUser)
       savedUser.password = undefined
       return res.status(201).json({ message: "User Created Successfully" })
     } catch (error) {

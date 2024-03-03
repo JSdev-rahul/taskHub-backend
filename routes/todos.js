@@ -1,12 +1,17 @@
 const express = require("express")
 const TodosCtrl = require("../controller/todos")
 const verifyToken = require("../middleware/authMiddleware")
-const sendEmail = require("../middleware/emailMiddleware")
-
+const verfiyUserIDFromParams = require("../middleware/verifyUserId")
 const todosRoutes = express.Router()
 
-todosRoutes.get("/:id", verifyToken, TodosCtrl.getUserTodos)
 todosRoutes.post("/", verifyToken, TodosCtrl.createNewTodo)
+todosRoutes.get(
+  "/:id",
+  verifyToken,
+  verfiyUserIDFromParams,
+  TodosCtrl.getUserTodos
+)
+
 todosRoutes.delete("/:id", verifyToken, TodosCtrl.deleteTodo)
 todosRoutes.patch("/:id", verifyToken, TodosCtrl.updateTodo)
 

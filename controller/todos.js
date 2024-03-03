@@ -4,6 +4,7 @@ const todos = require("../model/todos")
 const TodosCtrl = {
   createNewTodo: async (req, res) => {
     try {
+      req.body.user = req?.user?._id
       const result = await new todos(req.body).save()
       return res
         .status(201)
@@ -15,6 +16,7 @@ const TodosCtrl = {
   getUserTodos: async (req, res) => {
     try {
       const { id } = req.params
+
       const { completed, q, priority, page, limit } = req.query
 
       // Construct the base query object with the user ID and completed status
@@ -53,7 +55,20 @@ const TodosCtrl = {
   deleteTodo: async (req, res) => {
     try {
       const { id } = req.params
+
+      const todosDetails = await todos.findOne({ _id: id })
+
+      // Check if the user making the request is authorized to delete the todo.
+      // If the user ID in the request does not match the user ID associated with the todo,
+      // throw an error with a 400 status code and a message indicating unauthorized access.
+
+      if (!req.user?._id.equals(todosDetails?.user)) {
+        return res
+          .status(401)
+          .json({ message: "not aithorized to delete the todo" })
+      }
       const result = await todos.findByIdAndDelete(id)
+
       return res
         .status(200)
         .json({ message: "Todo deleted successfully", result })
@@ -64,6 +79,19 @@ const TodosCtrl = {
   updateTodo: async (req, res) => {
     try {
       const { id } = req.params
+
+      const todosDetails = await todos.findOne({ _id: id })
+
+      // Check if the user making the request is authorized to delete the todo.
+      // If the user ID in the request does not match the user ID associated with the todo,
+      // throw an error with a 400 status code and a message indicating unauthorized access.
+
+      if (!req.user?._id.equals(todosDetails?.user)) {
+        return res
+          .status(401)
+          .json({ message: "not aithorized to delete the todo" })
+      }
+
       const result = await todos.findByIdAndUpdate(
         id,
         { ...req.body },

@@ -1,4 +1,4 @@
-const emailOTPMiddleware = require("../middleware/emailOtpMiddleware")
+const sendOtpToEmail = require("../utils/sendOtpToEmail")
 const OTPModel = require("../model/otp")
 const otpGenerator = require("otp-generator")
 
@@ -62,7 +62,7 @@ const otpCtrl = {
         { otp },
         { new: true }
       )
-      emailOTPMiddleware("user", email, otp)
+      sendOtpToEmail("user", email, otp)
       res.status(200).json({ message: "New OTP Send To Your Email" })
     } catch (error) {
       console.error("Error saving OTP:", error)

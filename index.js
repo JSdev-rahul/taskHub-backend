@@ -33,10 +33,25 @@ app.use(
     },
   })
 )
-app.use(cors())
+
+var corsOptions = {
+  origin: "*",
+  methods: ["GET,HEAD,PUT,PATCH,POST,DELETE"],
+  preflightContinue: false,
+  credentials: true,
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+
+app.use(cors(corsOptions))
 app.use(express.static("uploads/"))
-app.use(express.json())
-app.use(bodyparser.urlencoded({ extended: false }))
+app.use(
+  express.json({
+    limit: "16kb",
+    strict: true,
+    type: "application/json",
+  })
+)
+app.use(express.urlencoded({ extended: false }))
 app.use(morgan("tiny"))
 
 // Generate Swagger documentation
@@ -52,4 +67,7 @@ app.use("/api/v1", apiV1Routes)
 // Start server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`)
+})
+app.on("error", (error) => {
+  console.log("Error", error)
 })

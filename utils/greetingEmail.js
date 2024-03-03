@@ -2,11 +2,10 @@ const transporter = require("../config/mailerConfig")
 const ejs = require("ejs")
 const path = require("path")
 
-function emailOTPMiddleware(userName, email, otp) {
-  // Render the EJS template
+function sendGreetingEmail(user) {
   ejs.renderFile(
-    path.join(__dirname, "../views/emailTemplate.ejs"),
-    { otp: otp, userName: userName },
+    path.join(__dirname, "../views/greetingEmailTemplate.ejs"),
+    { user },
     (err, data) => {
       if (err) {
         console.error("Error rendering email template:", err)
@@ -17,21 +16,22 @@ function emailOTPMiddleware(userName, email, otp) {
       transporter.sendMail(
         {
           from: "rahul.choudhary7813@gmail.com",
-          to: email,
-          subject: "Verify Your Email Address",
+          to: user?.email,
+          subject: "Welcome to Task Hub!",
           html: data,
         },
         (error, info) => {
           if (error) {
             console.error("Error sending email:", error)
-          } else {
-            console.log("Email sent successfully:", info)
-            next()
+            // return res.status(500).json({ error: "Failed to send email. Please try again later." });
           }
+          console.log("Email sent successfully:", info)
+          next()
         }
       )
     }
   )
+  // const { to, subject, text } = req.body;
 }
 
-module.exports = emailOTPMiddleware
+module.exports = sendGreetingEmail
