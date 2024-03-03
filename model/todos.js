@@ -6,6 +6,7 @@ const TodosSchema = new mongoose.Schema(
       type: String,
       required: [true, "Title required"],
       trim: true,
+      index: true,
     },
     description: {
       type: String,

@@ -16,8 +16,8 @@ const uploadOnCloudinary = async (localFilePath) => {
         localFilePath,
         {
           access_mode: "public",
-          resource_type: "auto",
-          format: "auto",
+          // resource_type: "auto",
+          // format: "auto",
         },
         (error, result) => {
           if (error) {

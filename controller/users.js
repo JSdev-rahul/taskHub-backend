@@ -12,9 +12,6 @@ const UserCtrl = {
         if (isExit.password == "") {
           const id = isExit?._id
           const newPath = await renameFileWithExtension(req.file)
-
-          console.log("newPath", newPath)
-
           const result = await users.findByIdAndUpdate(
             id,
             {
@@ -26,21 +23,25 @@ const UserCtrl = {
               new: true,
             }
           )
-          return res.status(200).json(result)
+          return res
+            .status(200)
+            .json({ result, message: "User Created Successfully" })
         }
         return res.status(404).json({ message: "Email is already taken" })
       }
 
       const newPath = await renameFileWithExtension(req.file)
-      console.log("newPath", newPath)
+
       const savedUser = await new users({
         ...req.body,
         password: hashedPassword(req.body.password),
-        avatar: newPath?.replace("uploads/", ""),
+        avatar: newPath,
       }).save()
       sendGreetingEmail(savedUser)
       savedUser.password = undefined
-      return res.status(201).json({ message: "User Created Successfully" })
+      return res
+        .status(201)
+        .json({ result: savedUser, message: "User Created Successfully" })
     } catch (error) {
       res.status(500).json(error.message)
     }
@@ -57,7 +58,7 @@ const UserCtrl = {
     try {
       const id = req.params.id
       const result = await users.findByIdAndDelete(id)
-      return res.status(200).json(result)
+      return res.status(200).json({ result, message: "user deleted" })
     } catch (error) {
       res.status(500).json(error.message)
     }

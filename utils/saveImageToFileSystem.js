@@ -1,6 +1,7 @@
 const axios = require("axios")
 const fs = require("fs")
 const path = require("path")
+const uploadOnCloudinary = require("./cloudinaryUpload")
 
 const saveImageToFileSystem = async (imageUrl, email) => {
   const uploadFolderPath = "uploads"
@@ -19,7 +20,7 @@ const saveImageToFileSystem = async (imageUrl, email) => {
     // Write the image data to the file system
     fs.writeFileSync(filePath, Buffer.from(response.data, "binary"))
     console.log("Image saved to file system:", filePath)
-    return filePath
+    return await uploadOnCloudinary(filePath)
   } catch (err) {
     console.error("Error saving image to file system:", err)
     throw err

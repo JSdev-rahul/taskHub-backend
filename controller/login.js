@@ -1,14 +1,24 @@
 const users = require("../model/users")
-const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 const sendOtpToEmail = require("../utils/sendOtpToEmail")
 const otpCtrl = require("./otp")
-const otpGenerator = require("otp-generator")
-const accessTokenSecretKey = process.env.ACCESS_TOKEN_SECRET
-const accessTokenExpiry = process.env.ACCESS_TOKEN_EXPIRY
 const { jwtDecode } = require("jwt-decode")
 const saveImageToFileSystem = require("../utils/saveImageToFileSystem")
 const sendGreetingEmail = require("../utils/greetingEmail")
+const genrateTokens = require("../utils/tokenGernrate")
+const genrateOTPHandler = require("../utils/genrateOTP")
+
+const sendSuccessLoginResponse = async (res, user) => {
+  const { access_token, refresh_token } = await genrateTokens(user)
+  user.password = undefined
+  user.refreshToken = undefined
+  res.status(200).json({
+    access_token,
+    refresh_token,
+    user,
+    message: "Login Successfull",
+  })
+}
 
 const LoginCtrl = {
   login: async (req, res) => {
@@ -20,25 +30,16 @@ const LoginCtrl = {
       if (!user) {
         return res.status(404).json({ message: "user not found" })
       }
-      const passwordMatch = await bcrypt.compare(password, user.password)
+      const passwordMatch = await bcrypt.compare(password, user?.password)
 
       if (!passwordMatch) {
         return res.status(404).json({ message: "password not match " })
       }
-      const token = jwt.sign({ userId: user._id }, accessTokenSecretKey, {
-        expiresIn: "1h",
-      })
-      user.password = undefined
-      const otp = otpGenerator.generate(4, {
-        lowerCaseAlphabets: false,
-        digits: true,
-        upperCaseAlphabets: false,
-        specialChars: false,
-      })
 
+      const otp = genrateOTPHandler()
       otpCtrl.savedOtp(email, otp)
       sendOtpToEmail(userName, email, otp)
-      res.status(200).json({ token, user, message: "Login Successfull" })
+      sendSuccessLoginResponse(res, user)
     } catch (error) {
       res.status(500).json({ message: "Login failed" })
     }
@@ -51,9 +52,7 @@ const LoginCtrl = {
         return res.status(400).json({ message: "Token is required" })
       }
       const userInfo = jwtDecode(Gtoken)
-
       const { email, name, picture } = userInfo
-
       let user = await users.findOne({ email })
       if (!user) {
         const avatarPath = await saveImageToFileSystem(picture, email)
@@ -64,15 +63,11 @@ const LoginCtrl = {
           gender: "",
           password: "", // Assuming you handle password separately
           avatar: avatarPath, // Corrected property name
-        }).save()
+        }).save({ validateBeforeSave: false })
         sendGreetingEmail(user)
       }
-      const token = jwt.sign({ userId: user._id }, accessTokenSecretKey, {
-        expiresIn: accessTokenExpiry,
-      })
-      user.password = undefined
 
-      return res.status(200).json({ token, user, message: "Login Successfull" })
+      sendSuccessLoginResponse(res, user)
     } catch (error) {
       console.error("Error:", error)
       return res.status(500).json({ message: "Internal Server Error" })
