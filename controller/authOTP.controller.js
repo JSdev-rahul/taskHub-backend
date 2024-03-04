@@ -1,9 +1,9 @@
-const sendOtpToEmail = require("../utils/sendOtpToEmail")
+// Internal modules
 const OTPModel = require("../model/otp.model")
-const otpGenerator = require("otp-generator")
+const UserModel = require("../model/user.model")
 const genrateOTPHandler = require("../utils/genrateOTP")
 const sendLoginResponse = require("../utils/loginResponseToUser")
-const UserModel = require("../model/user.model")
+const sendOtpToEmail = require("../utils/sendOtpToEmail")
 
 const AuthOTPController = {
   savedOtp: async (email, otp) => {

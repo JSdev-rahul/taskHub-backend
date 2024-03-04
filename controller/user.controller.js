@@ -2,6 +2,7 @@ const sendGreetingEmail = require("../utils/greetingEmail")
 const UserModel = require("../model/user.model")
 const hashedPassword = require("../utils/hashPassword")
 const renameFileWithExtension = require("../utils/renameFileWithExtension")
+
 const UserController = {
   createUser: async (req, res) => {
     try {

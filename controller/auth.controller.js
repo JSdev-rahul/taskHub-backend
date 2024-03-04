@@ -1,14 +1,19 @@
-const UserModel = require("../model/user.model")
+// External dependencies
 const bcrypt = require("bcrypt")
-const sendOtpToEmail = require("../utils/sendOtpToEmail")
-const AuthOTPController = require("./authOTP.controller")
+const jwt = require("jsonwebtoken")
 const { jwtDecode } = require("jwt-decode")
+
+// Internal modules
+const UserModel = require("../model/user.model")
+const AuthOTPController = require("./authOTP.controller")
+const genrateOTPHandler = require("../utils/genrateOTP")
+const genrateTokens = require("../utils/tokenGernrate")
 const saveImageToFileSystem = require("../utils/saveImageToFileSystem")
 const sendGreetingEmail = require("../utils/greetingEmail")
-const genrateTokens = require("../utils/tokenGernrate")
-const genrateOTPHandler = require("../utils/genrateOTP")
-const jwt = require("jsonwebtoken")
 const sendLoginResponse = require("../utils/loginResponseToUser")
+const sendOtpToEmail = require("../utils/sendOtpToEmail")
+
+// Environment variable
 const refreshTokenSecretKey = process.env.REFRESH_TOKEN_SECRET
 
 const AuthController = {
