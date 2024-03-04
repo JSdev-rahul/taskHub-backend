@@ -1,8 +1,8 @@
 const sendOtpToEmail = require("../utils/sendOtpToEmail")
-const OTPModel = require("../model/otp")
+const OTPModel = require("../model/otp.model")
 const otpGenerator = require("otp-generator")
 
-const otpCtrl = {
+const AuthOTPController = {
   savedOtp: async (email, otp) => {
     try {
       const existingOTPRecord = await OTPModel.findOne({ email })
@@ -71,4 +71,4 @@ const otpCtrl = {
   },
 }
 
-module.exports = otpCtrl
+module.exports = AuthOTPController

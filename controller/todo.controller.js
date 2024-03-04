@@ -1,8 +1,8 @@
-const errorMiddleware = require("../middleware/errorMiddleware")
-const todos = require("../model/todos")
+const todos = require("../model/todo.model")
 
-const TodosCtrl = {
-  createNewTodo: async (req, res) => {
+const TodoController = {
+  createTodo: async (req, res) => {
+    console.log(req)
     try {
       req.body.user = req?.user?._id
       const result = await new todos(req.body).save()
@@ -10,10 +10,10 @@ const TodosCtrl = {
         .status(201)
         .json({ result, message: "ToDo Created Successfuly" })
     } catch (error) {
-      errorMiddleware(error, req, res)
+      res.status(500).json({ message: "something went wrong" })
     }
   },
-  getUserTodos: async (req, res) => {
+  getUserTodo: async (req, res) => {
     try {
       const { id } = req.params
 
@@ -48,11 +48,11 @@ const TodosCtrl = {
       return res.status(200).json({ result, count: totalCount })
     } catch (error) {
       // Handle any errors and send an error response
-      errorMiddleware(error, req, res)
+      res.status(500).json({ message: "something went wrong" })
     }
   },
 
-  deleteTodo: async (req, res) => {
+  deleteTodoById: async (req, res) => {
     try {
       const { id } = req.params
 
@@ -73,10 +73,10 @@ const TodosCtrl = {
         .status(200)
         .json({ message: "Todo deleted successfully", result })
     } catch (error) {
-      errorMiddleware(error, req, res)
+      res.status(500).json({ message: "something went wrong" })
     }
   },
-  updateTodo: async (req, res) => {
+  updateTodoById: async (req, res) => {
     try {
       const { id } = req.params
 
@@ -103,9 +103,9 @@ const TodosCtrl = {
         .status(200)
         .json({ result, message: "ToDo update Successfully" })
     } catch (error) {
-      errorMiddleware(error, req, res)
+      res.status(500).json({ message: error?.message })
     }
   },
 }
 
-module.exports = TodosCtrl
+module.exports = TodoController

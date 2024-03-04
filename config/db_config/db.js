@@ -12,9 +12,7 @@ const Connection = async () => {
       console.log("Database connected successfully")
     })
 
-    mongoose.connection.on("disconnected", () => {
-      console.log("Database disconnected")
-    })
+    mongoose.connection.on("disconnected", () => {})
 
     mongoose.connection.on("error", (err) => {
       console.error("Error occurred:", err.message)
@@ -30,7 +28,7 @@ module.exports = Connection
 
 // try {
 //   const connectionInstanse = await mongoose.connect(MONGODB_URI)
-//   console.log(connectionInstanse.connection)
+//
 // } catch (error) {
 //   console.error("Error connecting to MongoDB:", error)
 // }

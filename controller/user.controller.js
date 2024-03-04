@@ -1,9 +1,9 @@
 const sendGreetingEmail = require("../utils/greetingEmail")
-const users = require("../model/users")
+const users = require("../model/user.model")
 const hashedPassword = require("../utils/hashPassword")
 const renameFileWithExtension = require("../utils/renameFileWithExtension")
-const UserCtrl = {
-  createNewUser: async (req, res) => {
+const UserController = {
+  createUser: async (req, res) => {
     try {
       const { email } = req.body
 
@@ -46,7 +46,7 @@ const UserCtrl = {
       res.status(500).json(error.message)
     }
   },
-  getAllUsers: async (req, res) => {
+  getUsers: async (req, res) => {
     try {
       const result = await users.find()
       return res.status(200).json(result)
@@ -54,7 +54,7 @@ const UserCtrl = {
       res.status(500).json(error.message)
     }
   },
-  deleteUserAccount: async (req, res) => {
+  deleteUser: async (req, res) => {
     try {
       const id = req.params.id
       const result = await users.findByIdAndDelete(id)
@@ -63,7 +63,7 @@ const UserCtrl = {
       res.status(500).json(error.message)
     }
   },
-  updateUserProfile: async (req, res) => {
+  updateUser: async (req, res) => {
     try {
       const id = req.params.id
       const result = await users.findByIdAndUpdate(
@@ -80,4 +80,4 @@ const UserCtrl = {
   },
 }
 
-module.exports = UserCtrl
+module.exports = UserController

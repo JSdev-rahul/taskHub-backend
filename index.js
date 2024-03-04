@@ -2,6 +2,7 @@ require("dotenv").config()
 // Database connection
 const Connection = require("./config/db_config/db.js")
 Connection()
+const cookieParser = require("cookie-parser")
 const express = require("express")
 const cors = require("cors")
 const helmet = require("helmet")
@@ -11,11 +12,12 @@ const swaggerUI = require("swagger-ui-express")
 const swaggerSpec = require("./docs/swagger.js")
 const seedUserDummyData = require("./seeds/userSeeds.js")
 
-const usersRoutes = require("./routes/users.js")
-const todosRoutes = require("./routes/todos.js")
-const loginRoute = require("./routes/login.js")
+const authRoute = require("./routes/auth.routes.js")
+const todoRoute = require("./routes/todo.routes.js")
+const userRoute = require("./routes/user.routes.js")
 
 const app = express()
+
 const port = process.env.PORT
 
 // Middleware
@@ -34,16 +36,18 @@ app.use(
   })
 )
 
-var corsOptions = {
-  origin: "*",
-  methods: ["GET,HEAD,PUT,PATCH,POST,DELETE"],
+const corsOptions = {
+  origin: "http://localhost:3001",
+  methods: ["get", "put", "post", "patch", "delete"],
   preflightContinue: false,
-  credentials: true,
-  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+  credentials: false,
+  optionsSuccessStatus: 200,
 }
 
 app.use(cors(corsOptions))
+app.use(cookieParser())
 app.use(express.static("uploads/"))
+
 app.use(
   express.json({
     limit: "16kb",
@@ -59,12 +63,13 @@ app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec))
 
 // Routes
 const apiV1Routes = express.Router()
-apiV1Routes.use("/users", usersRoutes)
-apiV1Routes.use("/todos", todosRoutes)
-apiV1Routes.use("/login", loginRoute)
+apiV1Routes.use("/users", userRoute)
+apiV1Routes.use("/todos", todoRoute)
+apiV1Routes.use("/login", authRoute)
 app.use("/api/v1", apiV1Routes)
 
 // Start server
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`)
 })

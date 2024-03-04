@@ -1,27 +1,35 @@
-const users = require("../model/users")
+const users = require("../model/user.model")
 const bcrypt = require("bcrypt")
 const sendOtpToEmail = require("../utils/sendOtpToEmail")
-const otpCtrl = require("./otp")
+const otpCtrl = require("./authOTP.controller")
 const { jwtDecode } = require("jwt-decode")
 const saveImageToFileSystem = require("../utils/saveImageToFileSystem")
 const sendGreetingEmail = require("../utils/greetingEmail")
 const genrateTokens = require("../utils/tokenGernrate")
 const genrateOTPHandler = require("../utils/genrateOTP")
 
-const sendSuccessLoginResponse = async (res, user) => {
+const sendLoginResponse = async (res, user) => {
   const { access_token, refresh_token } = await genrateTokens(user)
   user.password = undefined
   user.refreshToken = undefined
-  res.status(200).json({
-    access_token,
-    refresh_token,
-    user,
-    message: "Login Successfull",
-  })
+  const options = {
+    httpOnly: true,
+    secure: true,
+  }
+  res
+    .status(200)
+    // .cookie("access_token", access_token, options)
+    // .cookie("refresh_token", refresh_token, options)
+    .json({
+      access_token,
+      refresh_token,
+      user,
+      message: "Login Successfull",
+    })
 }
 
-const LoginCtrl = {
-  login: async (req, res) => {
+const AuthController = {
+  emailPasswordLogin: async (req, res) => {
     try {
       const { email, password } = req.body
       const user = await users.findOne({ email })
@@ -39,7 +47,7 @@ const LoginCtrl = {
       const otp = genrateOTPHandler()
       otpCtrl.savedOtp(email, otp)
       sendOtpToEmail(userName, email, otp)
-      sendSuccessLoginResponse(res, user)
+      sendLoginResponse(res, user)
     } catch (error) {
       res.status(500).json({ message: "Login failed" })
     }
@@ -67,7 +75,7 @@ const LoginCtrl = {
         sendGreetingEmail(user)
       }
 
-      sendSuccessLoginResponse(res, user)
+      sendLoginResponse(res, user)
     } catch (error) {
       console.error("Error:", error)
       return res.status(500).json({ message: "Internal Server Error" })
@@ -75,4 +83,4 @@ const LoginCtrl = {
   },
 }
 
-module.exports = LoginCtrl
+module.exports = AuthController

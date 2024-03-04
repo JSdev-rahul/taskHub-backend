@@ -1,4 +1,4 @@
-const users = require("../model/users")
+const users = require("../model/user.model")
 
 const seedUserDummyData = async () => {
   // Generate dummy data here (similar to the previous example)
@@ -23,7 +23,6 @@ const seedUserDummyData = async () => {
 
     // Insert dummy users into the database
     await users.insertMany(dummyUsers)
-    console.log("Dummy data seeded successfully")
   } catch (error) {
     console.error("Error seeding dummy data:", error)
   }

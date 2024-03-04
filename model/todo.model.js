@@ -52,12 +52,12 @@ TodosSchema.set("toJSON", {
 
 // TodosSchema.pre("save", function (next) {
 //   // do stuff
-//   console.log("i am pre")
+//
 //   this.priority = "no"
 //   next()
 // })
 // TodosSchema.post("save", function (doc) {
-//   console.log("%s has been saved", doc._id)
+//
 // })
 
 module.exports = mongoose.model("todos", TodosSchema)

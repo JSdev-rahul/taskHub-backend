@@ -5,7 +5,7 @@ const path = require("path")
 function sendOtpToEmail(userName, email, otp) {
   // Render the EJS template
   ejs.renderFile(
-    path.join(__dirname, "../views/emailTemplate.ejs"),
+    path.join(__dirname, "../views/OTPemailTemplate.ejs"),
     { otp: otp, userName: userName },
     (err, data) => {
       if (err) {
@@ -25,7 +25,6 @@ function sendOtpToEmail(userName, email, otp) {
           if (error) {
             console.error("Error sending email:", error)
           } else {
-            console.log("Email sent successfully:", info)
             next()
           }
         }

@@ -25,7 +25,7 @@ function sendGreetingEmail(user) {
             console.error("Error sending email:", error)
             // return res.status(500).json({ error: "Failed to send email. Please try again later." });
           }
-          console.log("Email sent successfully:", info)
+
           next()
         }
       )

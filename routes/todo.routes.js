@@ -1,21 +1,22 @@
 const express = require("express")
-const TodosCtrl = require("../controller/todos")
-const verifyToken = require("../middleware/authMiddleware")
-const verfiyUserIDFromParams = require("../middleware/verifyUserId")
-const todosRoutes = express.Router()
+const TodoController = require("../controller/todo.controller")
+const verfiyUserIDFromParams = require("../middlewares/verifyUserId.middleware")
+const verifyToken = require("../middlewares/auth.middleware")
 
-todosRoutes.post("/", verifyToken, TodosCtrl.createNewTodo)
-todosRoutes.get(
+const todoRoute = express.Router()
+
+todoRoute.post("/", verifyToken, TodoController.createTodo)
+todoRoute.get(
   "/:id",
   verifyToken,
   verfiyUserIDFromParams,
-  TodosCtrl.getUserTodos
+  TodoController.getUserTodo
 )
 
-todosRoutes.delete("/:id", verifyToken, TodosCtrl.deleteTodo)
-todosRoutes.patch("/:id", verifyToken, TodosCtrl.updateTodo)
+todoRoute.delete("/:id", verifyToken, TodoController.deleteTodoById)
+todoRoute.patch("/:id", verifyToken, TodoController.updateTodoById)
 
-module.exports = todosRoutes
+module.exports = todoRoute
 
 /**
  * @swagger
