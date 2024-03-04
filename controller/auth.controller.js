@@ -1,34 +1,15 @@
 const users = require("../model/user.model")
 const bcrypt = require("bcrypt")
 const sendOtpToEmail = require("../utils/sendOtpToEmail")
-const otpCtrl = require("./authOTP.controller")
+const AuthOTPController = require("./authOTP.controller")
 const { jwtDecode } = require("jwt-decode")
 const saveImageToFileSystem = require("../utils/saveImageToFileSystem")
 const sendGreetingEmail = require("../utils/greetingEmail")
 const genrateTokens = require("../utils/tokenGernrate")
 const genrateOTPHandler = require("../utils/genrateOTP")
 const jwt = require("jsonwebtoken")
+const sendLoginResponse = require("../utils/loginResponseToUser")
 const refreshTokenSecretKey = process.env.REFRESH_TOKEN_SECRET
-
-const sendLoginResponse = async (res, user) => {
-  const { access_token, refresh_token } = await genrateTokens(user)
-  user.password = undefined
-  user.refreshToken = undefined
-  const options = {
-    httpOnly: true,
-    secure: true,
-  }
-  res
-    .status(200)
-    // .cookie("access_token", access_token, options)
-    // .cookie("refresh_token", refresh_token, options)
-    .json({
-      access_token,
-      refresh_token,
-      user,
-      message: "Login Successfull",
-    })
-}
 
 const AuthController = {
   emailPasswordLogin: async (req, res) => {
@@ -47,9 +28,11 @@ const AuthController = {
       }
 
       const otp = genrateOTPHandler()
-      otpCtrl.savedOtp(email, otp)
+      AuthOTPController.savedOtp(email, otp)
       sendOtpToEmail(userName, email, otp)
-      sendLoginResponse(res, user)
+      return res
+        .status(200)
+        .json({ message: "Email password Login Successfull" })
     } catch (error) {
       res.status(500).json({ message: "Login failed" })
     }

@@ -49,14 +49,4 @@ TodosSchema.set("toJSON", {
   },
 })
 
-// TodosSchema.pre("save", function (next) {
-//   // do stuff
-//
-//   this.priority = "no"
-//   next()
-// })
-// TodosSchema.post("save", function (doc) {
-//
-// })
-
 module.exports = mongoose.model("todos", TodosSchema)

@@ -2,6 +2,8 @@ const sendOtpToEmail = require("../utils/sendOtpToEmail")
 const OTPModel = require("../model/otp.model")
 const otpGenerator = require("otp-generator")
 const genrateOTPHandler = require("../utils/genrateOTP")
+const sendLoginResponse = require("../utils/loginResponseToUser")
+const users = require("../model/user.model")
 
 const AuthOTPController = {
   savedOtp: async (email, otp) => {
@@ -31,8 +33,9 @@ const AuthOTPController = {
 
       // Compare the provided OTP with the OTP from the database
       if (otpRecord?.otp === otp) {
+        const user = await users.findOne({ email })
+        await sendLoginResponse(res, user)
         AuthOTPController.deleteOTP(email, otp)
-        return res.status(200).json({ message: "OTP verified" })
       } else {
         return res.status(400).json({ message: "Invalid OTP" })
       }
