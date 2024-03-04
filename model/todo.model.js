@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const TodosSchema = new mongoose.Schema(
+const TodoSchema = new mongoose.Schema(
   {
     title: {
       type: String,
@@ -41,7 +41,7 @@ const TodosSchema = new mongoose.Schema(
     strictPopulate: false,
   }
 )
-TodosSchema.set("toJSON", {
+TodoSchema.set("toJSON", {
   virtuals: true,
   versionKey: false,
   transform: function (doc, ret) {
@@ -49,4 +49,7 @@ TodosSchema.set("toJSON", {
   },
 })
 
-module.exports = mongoose.model("todos", TodosSchema)
+// module.exports = mongoose.model("todos", TodoSchema)
+const ToDoModel = mongoose.model("ToDo", TodoSchema)
+
+module.exports = ToDoModel

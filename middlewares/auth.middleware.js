@@ -10,8 +10,6 @@ async function verifyToken(req, res, next) {
 
     const tokenWithOutBearer = token?.replace("Bearer ", "")
 
-    console.log("tokenWithOutBearer", tokenWithOutBearer)
-
     const decodedToken = jwt.verify(tokenWithOutBearer, accessTokenSecretKey)
 
     const user = await users.findOne({ _id: decodedToken?.userId })

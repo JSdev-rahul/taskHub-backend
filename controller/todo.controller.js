@@ -1,11 +1,10 @@
-const todos = require("../model/todo.model")
+const ToDoModel = require("../model/todo.model")
 
 const TodoController = {
   createTodo: async (req, res) => {
-    console.log(req)
     try {
       req.body.user = req?.user?._id
-      const result = await new todos(req.body).save()
+      const result = await new ToDoModel(req.body).save()
       return res
         .status(201)
         .json({ result, message: "ToDo Created Successfuly" })
@@ -36,11 +35,10 @@ const TodoController = {
       const countQuery = { ...query }
 
       // Count the total number of documents matching the query criteria
-      const totalCount = await todos.countDocuments(countQuery)
+      const totalCount = await ToDoModel.countDocuments(countQuery)
 
       // Find todos matching the query with pagination
-      const result = await todos
-        .find(query, { user: 0 })
+      const result = await ToDoModel.find(query, { user: 0 })
         .skip(page * limit - limit)
         .limit(limit)
 
@@ -56,7 +54,7 @@ const TodoController = {
     try {
       const { id } = req.params
 
-      const todosDetails = await todos.findOne({ _id: id })
+      const todosDetails = await ToDoModel.findOne({ _id: id })
 
       // Check if the user making the request is authorized to delete the todo.
       // If the user ID in the request does not match the user ID associated with the todo,
@@ -67,7 +65,7 @@ const TodoController = {
           .status(401)
           .json({ message: "not aithorized to delete the todo" })
       }
-      const result = await todos.findByIdAndDelete(id)
+      const result = await ToDoModel.findByIdAndDelete(id)
 
       return res
         .status(200)
@@ -80,7 +78,7 @@ const TodoController = {
     try {
       const { id } = req.params
 
-      const todosDetails = await todos.findOne({ _id: id })
+      const todosDetails = await ToDoModel.findOne({ _id: id })
 
       // Check if the user making the request is authorized to delete the todo.
       // If the user ID in the request does not match the user ID associated with the todo,
@@ -92,7 +90,7 @@ const TodoController = {
           .json({ message: "not aithorized to delete the todo" })
       }
 
-      const result = await todos.findByIdAndUpdate(
+      const result = await ToDoModel.findByIdAndUpdate(
         id,
         { ...req.body },
         {

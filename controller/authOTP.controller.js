@@ -3,7 +3,7 @@ const OTPModel = require("../model/otp.model")
 const otpGenerator = require("otp-generator")
 const genrateOTPHandler = require("../utils/genrateOTP")
 const sendLoginResponse = require("../utils/loginResponseToUser")
-const users = require("../model/user.model")
+const UserModel = require("../model/user.model")
 
 const AuthOTPController = {
   savedOtp: async (email, otp) => {
@@ -33,7 +33,7 @@ const AuthOTPController = {
 
       // Compare the provided OTP with the OTP from the database
       if (otpRecord?.otp === otp) {
-        const user = await users.findOne({ email })
+        const user = await UserModel.findOne({ email })
         await sendLoginResponse(res, user)
         AuthOTPController.deleteOTP(email, otp)
       } else {

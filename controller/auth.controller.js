@@ -1,4 +1,4 @@
-const users = require("../model/user.model")
+const UserModel = require("../model/user.model")
 const bcrypt = require("bcrypt")
 const sendOtpToEmail = require("../utils/sendOtpToEmail")
 const AuthOTPController = require("./authOTP.controller")
@@ -15,7 +15,7 @@ const AuthController = {
   emailPasswordLogin: async (req, res) => {
     try {
       const { email, password } = req.body
-      const user = await users.findOne({ email })
+      const user = await UserModel.findOne({ email })
 
       const userName = user?.name
       if (!user) {
@@ -46,10 +46,10 @@ const AuthController = {
       }
       const userInfo = jwtDecode(Gtoken)
       const { email, name, picture } = userInfo
-      let user = await users.findOne({ email })
+      let user = await UserModel.findOne({ email })
       if (!user) {
         const avatarPath = await saveImageToFileSystem(picture, email)
-        user = await new users({
+        user = await new UserModel({
           email,
           name,
           role: "user",
@@ -72,7 +72,7 @@ const AuthController = {
       const { refreshToken } = req.body
       const decodedToken = jwt.verify(refreshToken, refreshTokenSecretKey)
 
-      const user = await users.findOne({ _id: decodedToken?.userId })
+      const user = await UserModel.findOne({ _id: decodedToken?.userId })
       if (!user) {
         res.status(400).json({ message: "user not valid" })
       }
