@@ -7,6 +7,8 @@ const saveImageToFileSystem = require("../utils/saveImageToFileSystem")
 const sendGreetingEmail = require("../utils/greetingEmail")
 const genrateTokens = require("../utils/tokenGernrate")
 const genrateOTPHandler = require("../utils/genrateOTP")
+const jwt = require("jsonwebtoken")
+const refreshTokenSecretKey = process.env.REFRESH_TOKEN_SECRET
 
 const sendLoginResponse = async (res, user) => {
   const { access_token, refresh_token } = await genrateTokens(user)
@@ -79,6 +81,34 @@ const AuthController = {
     } catch (error) {
       console.error("Error:", error)
       return res.status(500).json({ message: "Internal Server Error" })
+    }
+  },
+
+  genrateNewAccessToken: async (req, res) => {
+    try {
+      const { refreshToken } = req.body
+      const decodedToken = jwt.verify(refreshToken, refreshTokenSecretKey)
+
+      const user = await users.findOne({ _id: decodedToken?.userId })
+      if (!user) {
+        res.status(400).json({ message: "user not valid" })
+      }
+
+      if (refreshToken !== user?.refreshToken) {
+        res.status(401).json({ message: "refresh token not valid" })
+      }
+
+      const { access_token, refresh_token } = await genrateTokens(user)
+      user.refreshToken = refresh_token
+
+      await user.save({ validateBeforeSave: false })
+      res.status(200).json({
+        access_token,
+        refresh_token,
+        message: "New Access Token Successfully genrated",
+      })
+    } catch (error) {
+      res.status(500).json({ message: error?.message })
     }
   },
 }

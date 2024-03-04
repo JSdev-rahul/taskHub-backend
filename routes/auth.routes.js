@@ -9,5 +9,6 @@ authRoute.post("/", AuthController.emailPasswordLogin)
 authRoute.post("/verify-otp", verifyToken, AuthOTPController.verifyOTP) // route /login/verify-otp
 authRoute.post("/regnrate-otp", verifyToken, AuthOTPController.regenerateOTP)
 authRoute.post("/google-auth", AuthController.googleAuthLogIn)
+authRoute.post("/generate-access-token", AuthController.genrateNewAccessToken)
 
 module.exports = authRoute

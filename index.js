@@ -66,6 +66,7 @@ const apiV1Routes = express.Router()
 apiV1Routes.use("/users", userRoute)
 apiV1Routes.use("/todos", todoRoute)
 apiV1Routes.use("/login", authRoute)
+apiV1Routes.use("/token", authRoute)
 app.use("/api/v1", apiV1Routes)
 
 // Start server
