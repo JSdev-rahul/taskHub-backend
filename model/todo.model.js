@@ -21,10 +21,6 @@ const TodosSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -34,6 +30,9 @@ const TodosSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+  },
+  {
+    timestamps: true,
   },
   {
     strictQuery: false,
