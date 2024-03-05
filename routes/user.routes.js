@@ -10,5 +10,10 @@ userRoute.get("/", verifyToken, UserController.getUsers)
 userRoute.post("/", upload.single("avatar"), UserController.createUser)
 userRoute.delete("/:id", verifyToken, UserController.deleteUser)
 userRoute.patch("/:id", verifyToken, UserController.updateUser)
-
+userRoute.post(
+  "/update-avatar",
+  verifyToken,
+  upload.single("avatar"),
+  UserController.updateUserAvtar
+)
 module.exports = userRoute

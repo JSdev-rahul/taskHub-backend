@@ -20,7 +20,7 @@ const saveImageToFileSystem = async (imageUrl, email) => {
     // Write the image data to the file system
     fs.writeFileSync(filePath, Buffer.from(response.data, "binary"))
 
-    return await uploadOnCloudinary(filePath)
+    return await uploadOnCloudinary(filePath, "")
   } catch (err) {
     console.error("Error saving image to file system:", err)
     throw err

@@ -1,5 +1,6 @@
 const cloudinary = require("cloudinary").v2
 const fs = require("fs")
+const deleteOldFilesOnCloudinary = require("./deleteFilesOnCludinary")
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -7,7 +8,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 })
 
-const uploadOnCloudinary = async (localFilePath) => {
+const uploadOnCloudinary = async (localFilePath, pubId) => {
   try {
     if (!localFilePath) return null
     // Promisify the cloudinary.uploader.upload function
@@ -23,6 +24,7 @@ const uploadOnCloudinary = async (localFilePath) => {
           if (error) {
             reject(error)
           } else {
+            console.log("result", result)
             resolve(result)
           }
         }
@@ -30,7 +32,10 @@ const uploadOnCloudinary = async (localFilePath) => {
     })
 
     fs.unlinkSync(localFilePath)
-    return uploadResult.url
+
+    const { url, public_id } = uploadResult
+    await deleteOldFilesOnCloudinary(pubId)
+    return { url, public_id }
   } catch (error) {
     console.error("Error uploading to Cloudinary:", error)
     fs.unlinkSync(localFilePath)

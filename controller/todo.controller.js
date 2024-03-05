@@ -33,6 +33,7 @@ const TodoController = {
 
       // Clone the query object for counting total documents
       const countQuery = { ...query }
+      console.log(countQuery)
 
       // Count the total number of documents matching the query criteria
       const totalCount = await ToDoModel.countDocuments(countQuery)

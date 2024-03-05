@@ -15,6 +15,7 @@ const seedUserDummyData = require("./seeds/userSeeds.js")
 const authRoute = require("./routes/auth.routes.js")
 const todoRoute = require("./routes/todo.routes.js")
 const userRoute = require("./routes/user.routes.js")
+const UserController = require("./controller/user.controller.js")
 
 const app = express()
 
@@ -67,6 +68,7 @@ apiV1Routes.use("/users", userRoute)
 apiV1Routes.use("/todos", todoRoute)
 apiV1Routes.use("/login", authRoute)
 apiV1Routes.use("/token", authRoute)
+apiV1Routes.use("/avatar", userRoute)
 app.use("/api/v1", apiV1Routes)
 
 // Start server

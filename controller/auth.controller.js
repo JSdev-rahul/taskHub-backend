@@ -53,14 +53,21 @@ const AuthController = {
       const { email, name, picture } = userInfo
       let user = await UserModel.findOne({ email })
       if (!user) {
-        const avatarPath = await saveImageToFileSystem(picture, email)
+        const { url = "", public_id = "" } = await saveImageToFileSystem(
+          picture,
+          email
+        )
+
         user = await new UserModel({
           email,
           name,
           role: "user",
           gender: "",
           password: "", // Assuming you handle password separately
-          avatar: avatarPath, // Corrected property name
+          avatar: {
+            url,
+            public_id,
+          }, // Corrected property name
         }).save({ validateBeforeSave: false })
         sendGreetingEmail(user)
       }
@@ -96,6 +103,7 @@ const AuthController = {
         message: "New Access Token Successfully genrated",
       })
     } catch (error) {
+      console.log("err", error)
       res.status(500).json({ message: error?.message })
     }
   },
