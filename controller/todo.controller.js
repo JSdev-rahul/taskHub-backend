@@ -1,4 +1,5 @@
 const ToDoModel = require("../model/todo.model")
+const mongoose = require("mongoose")
 
 const TodoController = {
   createTodo: async (req, res) => {
@@ -16,36 +17,78 @@ const TodoController = {
     try {
       const { id } = req.params
 
-      const { completed, q, priority, page, limit } = req.query
+      const { completed, q, priority, page = 1, limit = 5 } = req.query
 
-      // Construct the base query object with the user ID and completed status
-      const query = { user: id, completed }
+      const query = {
+        user: new mongoose.Types.ObjectId(id),
+        completed: completed == "true" ? true : false,
+      }
 
-      // Add priority filter if provided in query parameters
       if (priority) {
         query.priority = priority
       }
-
-      // Add title search filter using regex if provided in query parameters
       if (q) {
-        query.title = { $regex: q, $options: "i" } // Case-insensitive search using regex
+        query.title = { $regex: q, $options: "i" }
       }
 
-      // Clone the query object for counting total documents
-      const countQuery = { ...query }
-      console.log(countQuery)
+      // ======= Get total Count  ========
 
-      // Count the total number of documents matching the query criteria
-      const totalCount = await ToDoModel.countDocuments(countQuery)
+      // const totalCount = await ToDoModel.countDocuments(query)
 
-      // Find todos matching the query with pagination
-      const result = await ToDoModel.find(query, { user: 0 })
-        .skip(page * limit - limit)
-        .limit(limit)
+      //=============================================
 
-      // Return the paginated todos and total count in the response
-      return res.status(200).json({ result, count: totalCount })
+      // ========= Normal Query =============
+
+      // const result = await ToDoModel.aggregate([
+      //   {
+      //     $match: query,
+      //   },
+      //   {
+      //     $skip: page * limit - limit,
+      //   },
+      //   {
+      //     $limit: Number(limit),
+      //   },
+      // ])
+
+      // ===============================
+
+      //  ==========Nested query============
+
+      const result = await ToDoModel.aggregate([
+        {
+          $facet: {
+            document: [
+              {
+                $match: query,
+              },
+              {
+                $limit: Number(limit),
+              },
+              {
+                $skip: page * limit - limit,
+              },
+            ],
+            totalCount: [{ $match: query }, { $count: "count" }],
+          },
+        },
+        {
+          $project: {
+            document: 1,
+            totalCount: { $arrayElemAt: ["$totalCount.count", 0] },
+          },
+        },
+      ])
+      //===========================================
+
+      // const res = await ToDoModel.find(query, { user: 0 }).limit(1)    // user 0 means user filed project ho jayegi
+      // console.log("res", res)
+
+      return res
+        .status(200)
+        .json({ result: result[0]?.document, count: result[0]?.totalCount })
     } catch (error) {
+      console.log("er", error)
       // Handle any errors and send an error response
       res.status(500).json({ message: "something went wrong" })
     }
