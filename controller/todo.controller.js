@@ -33,60 +33,58 @@ const TodoController = {
 
       // ======= Get total Count  ========
 
-      // const totalCount = await ToDoModel.countDocuments(query)
+      const totalCount = await ToDoModel.countDocuments(query)
 
       //=============================================
 
       // ========= Normal Query =============
 
-      // const result = await ToDoModel.aggregate([
-      //   {
-      //     $match: query,
-      //   },
-      //   {
-      //     $skip: page * limit - limit,
-      //   },
-      //   {
-      //     $limit: Number(limit),
-      //   },
-      // ])
+      const result = await ToDoModel.aggregate([
+        {
+          $match: query,
+        },
+        {
+          $skip: page * limit - limit,
+        },
+        {
+          $limit: Number(limit),
+        },
+      ])
 
       // ===============================
 
       //  ==========Nested query============
 
-      const result = await ToDoModel.aggregate([
-        {
-          $facet: {
-            document: [
-              {
-                $match: query,
-              },
-              {
-                $limit: Number(limit),
-              },
-              {
-                $skip: page * limit - limit,
-              },
-            ],
-            totalCount: [{ $match: query }, { $count: "count" }],
-          },
-        },
-        {
-          $project: {
-            document: 1,
-            totalCount: { $arrayElemAt: ["$totalCount.count", 0] },
-          },
-        },
-      ])
+      // const result = await ToDoModel.aggregate([
+      //   {
+      //     $facet: {
+      //       document: [
+      //         {
+      //           $match: query,
+      //         },
+      //         {
+      //           $limit: Number(limit),
+      //         },
+      //         {
+      //           $skip: page * limit - limit,
+      //         },
+      //       ],
+      //       totalCount: [{ $match: query }, { $count: "count" }],
+      //     },
+      //   },
+      //   {
+      //     $project: {
+      //       document: 1,
+      //       totalCount: { $arrayElemAt: ["$totalCount.count", 0] },
+      //     },
+      //   },
+      // ])
       //===========================================
 
       // const res = await ToDoModel.find(query, { user: 0 }).limit(1)    // user 0 means user filed project ho jayegi
       // console.log("res", res)
 
-      return res
-        .status(200)
-        .json({ result: result[0]?.document, count: result[0]?.totalCount })
+      return res.status(200).json({ result, count: totalCount })
     } catch (error) {
       console.log("er", error)
       // Handle any errors and send an error response
