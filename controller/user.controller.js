@@ -155,12 +155,17 @@ const UserController = {
             public_id,
           },
         },
+
         {
           new: true,
         }
-      )
+      ).select("avatar")
       return res.status(200).json(updateUserDetaile)
-    } catch (error) {}
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error?.message || "Something went wrong" })
+    }
   },
 }
 
