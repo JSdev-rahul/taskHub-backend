@@ -83,21 +83,13 @@ const AuthController = {
     try {
       const { refreshToken } = req.body
       const decodedToken = jwt.verify(refreshToken, refreshTokenSecretKey)
+      console.log("decodeToken", decodedToken)
 
       const user = await UserModel.findOne({ _id: decodedToken?.userId })
-      if (!user) {
-        res.status(400).json({ message: "user not valid" })
-      }
-
-      if (refreshToken !== user?.refreshToken) {
-        res.status(401).json({ message: "refresh token not valid" })
-      }
 
       const { access_token, refresh_token } = await genrateTokens(user)
-      user.refreshToken = refresh_token
 
-      await user.save({ validateBeforeSave: false })
-      res.status(200).json({
+      return res.status(200).json({
         access_token,
         refresh_token,
         message: "New Access Token Successfully genrated",
