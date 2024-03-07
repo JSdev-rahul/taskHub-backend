@@ -9,5 +9,5 @@ authRoute.post("/verify-otp", AuthOTPController.verifyOTP) // route /login/verif
 authRoute.post("/regnrate-otp", AuthOTPController.regenerateOTP)
 authRoute.post("/google-auth", AuthController.googleAuthLogIn)
 authRoute.post("/generate-access-token", AuthController.genrateNewAccessToken)
-
+authRoute.patch("/update-password", AuthController.changePassword)
 module.exports = authRoute
