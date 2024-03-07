@@ -16,7 +16,7 @@ const sendLoginResponse = async (res, user) => {
       access_token,
       refresh_token,
       user,
-      message: "Login Successfull",
+      message: "OTP verified",
     })
 }
 

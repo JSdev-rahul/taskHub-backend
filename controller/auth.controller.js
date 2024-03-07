@@ -12,7 +12,6 @@ const saveImageToFileSystem = require("../utils/saveImageToFileSystem")
 const sendGreetingEmail = require("../utils/greetingEmail")
 const sendLoginResponse = require("../utils/loginResponseToUser")
 const sendOtpToEmail = require("../utils/sendOtpToEmail")
-const hashedPassword = require("../utils/hashPassword")
 
 // Environment variable
 const refreshTokenSecretKey = process.env.REFRESH_TOKEN_SECRET
@@ -114,16 +113,17 @@ const AuthController = {
           message: "Old password does not match the current password.",
         })
       }
+      await user.updatePassword(newPassword)
 
-      await UserModel.findByIdAndUpdate(
-        { _id: user?._id },
-        {
-          password: hashedPassword(newPassword),
-        },
-        {
-          new: true,
-        }
-      )
+      // await UserModel.findByIdAndUpdate(
+      //   { _id: user?._id },
+      //   {
+      //     password: hashedPassword(newPassword),
+      //   },
+      //   {
+      //     new: true,
+      //   }
+      // )
       return res.status(200).json({ message: "password updated ssuccessfully" })
     } catch (error) {
       return res
@@ -133,6 +133,53 @@ const AuthController = {
   },
 
   // formgot password latel
+
+  sendForgotPasswordOtp: async (req, res) => {
+    try {
+      const { email } = req.body
+      console.log("email")
+      const user = await UserModel.findOne({ email })
+      console.log("user", user)
+      if (!user) {
+        return res.status(400).json({ message: "email not found" })
+      }
+
+      const otp = genrateOTPHandler()
+      AuthOTPController.savedOtp(email, otp)
+      const userName = user?.name
+      sendOtpToEmail(userName, email, otp)
+      return res.status(200).json({ message: "OTP send to register email Id" })
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: error.message || "something went wrong" })
+    }
+  },
+  forgotPassword: async (req, res) => {
+    try {
+      const { newPassword, email } = req.body
+
+      const user = await UserModel.findOne({ email })
+      console.log("user", user)
+      if (!user) {
+        return res.status(400).json({ message: "user not found  " })
+      }
+      await user.updatePassword(newPassword)
+
+      // const result = await UserModel.findByIdAndUpdate(
+      //   id,
+      //   {
+      //     password: hashedPassword(newPassword),
+      //   },
+      //   { new: true }
+      // )
+
+      return res.status(200).json({ message: "password updated successfully" })
+    } catch (error) {
+      console.log("err", error)
+      return res.status(500).json({ message: "password sucessfully" })
+    }
+  },
 }
 
 module.exports = AuthController

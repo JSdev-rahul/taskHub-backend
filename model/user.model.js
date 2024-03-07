@@ -1,5 +1,6 @@
 const mongoose = require("mongoose")
 const bcrypt = require("bcrypt")
+const hashedPassword = require("../utils/hashPassword")
 
 const UserSchema = new mongoose.Schema(
   {
@@ -73,6 +74,13 @@ UserSchema.set("toJSON", {
 UserSchema.methods.comparePassword = async function (oldPassword) {
   const isPasswordMatch = await bcrypt.compare(oldPassword, this.password)
   return isPasswordMatch
+}
+
+UserSchema.methods.updatePassword = async function (newPassward) {
+  const hashedNewPassword = hashedPassword(newPassward)
+  this.password = hashedNewPassword
+  await this.save()
+  return
 }
 
 const UserModel = mongoose.model("User", UserSchema)
