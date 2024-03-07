@@ -12,6 +12,7 @@ const saveImageToFileSystem = require("../utils/saveImageToFileSystem")
 const sendGreetingEmail = require("../utils/greetingEmail")
 const sendLoginResponse = require("../utils/loginResponseToUser")
 const sendOtpToEmail = require("../utils/sendOtpToEmail")
+const hashedPassword = require("../utils/hashPassword")
 
 // Environment variable
 const refreshTokenSecretKey = process.env.REFRESH_TOKEN_SECRET
@@ -39,7 +40,7 @@ const AuthController = {
         .status(200)
         .json({ message: "Email password Login Successfull" })
     } catch (error) {
-      res.status(500).json({ message: "Login failed" })
+      return res.status(500).json({ message: "Login failed" })
     }
   },
 
@@ -74,7 +75,6 @@ const AuthController = {
 
       sendLoginResponse(res, user)
     } catch (error) {
-      console.error("Error:", error)
       return res.status(500).json({ message: "Internal Server Error" })
     }
   },
@@ -83,7 +83,6 @@ const AuthController = {
     try {
       const { refreshToken } = req.body
       const decodedToken = jwt.verify(refreshToken, refreshTokenSecretKey)
-      console.log("decodeToken", decodedToken)
 
       const user = await UserModel.findOne({ _id: decodedToken?.userId })
 
@@ -95,10 +94,45 @@ const AuthController = {
         message: "New Access Token Successfully genrated",
       })
     } catch (error) {
-      console.log("err", error)
-      res.status(500).json({ message: error?.message })
+      return res.status(500).json({ message: error?.message })
     }
   },
+
+  changePassword: async (req, res) => {
+    try {
+      const { email, oldPassword, newPassword } = req.body
+      const user = await UserModel.findOne({ email })
+
+      if (!user) {
+        return res.status(400).json({ message: "user not found  " })
+      }
+
+      isPasswordMatch = await user.comparePassword(oldPassword)
+
+      if (!isPasswordMatch) {
+        return res.status(400).json({
+          message: "Old password does not match the current password.",
+        })
+      }
+
+      await UserModel.findByIdAndUpdate(
+        { _id: user?._id },
+        {
+          password: hashedPassword(newPassword),
+        },
+        {
+          new: true,
+        }
+      )
+      return res.status(200).json({ message: "password updated ssuccessfully" })
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: error.message || "something went wrong" })
+    }
+  },
+
+  // formgot password latel
 }
 
 module.exports = AuthController

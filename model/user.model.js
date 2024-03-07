@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const bcrypt = require("bcrypt")
 
 const UserSchema = new mongoose.Schema(
   {
@@ -67,6 +68,12 @@ UserSchema.set("toJSON", {
     delete ret._id
   },
 })
+
+// this can not be accessssible in modern es 6 aerrow function need to use function way
+UserSchema.methods.comparePassword = async function (oldPassword) {
+  const isPasswordMatch = await bcrypt.compare(oldPassword, this.password)
+  return isPasswordMatch
+}
 
 const UserModel = mongoose.model("User", UserSchema)
 

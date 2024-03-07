@@ -124,6 +124,11 @@ const UserController = {
   updateUser: async (req, res) => {
     try {
       const id = req.params?.id
+      if (req.body?.password) {
+        return res
+          .status(400)
+          .json({ error: "Password cannot be updated using this endpoint." })
+      }
       const result = await UserModel.findByIdAndUpdate(
         id,
         {
@@ -135,7 +140,7 @@ const UserController = {
       )
       return res.status(200).json(result)
     } catch (error) {
-      res.status(500).json({ message: "something went wrong" })
+      return res.status(500).json({ message: "something went wrong" })
     }
   },
   updateUserAvtar: async (req, res) => {
