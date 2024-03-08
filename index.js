@@ -14,7 +14,6 @@ const authRoute = require("./routes/auth.routes.js")
 const todoRoute = require("./routes/todo.routes.js")
 const userRoute = require("./routes/user.routes.js")
 const AuthController = require("./controller/auth.controller.js")
-const AuthOTPController = require("./controller/authOTP.controller.js")
 
 const app = express()
 
@@ -69,10 +68,12 @@ apiV1Routes.use("/login", authRoute)
 apiV1Routes.use("/token", authRoute)
 apiV1Routes.use("/password", authRoute)
 apiV1Routes.use("/avatar", userRoute)
+apiV1Routes.post("/otp", authRoute)
 
+// apiV1Routes.use("/password", authRoute)
+// apiV1Routes.use("/avatar", userRoute)
 //  forgot password Otp
-apiV1Routes.post("/send-otp", AuthController.sendForgotPasswordOtp)
-apiV1Routes.post("/password/forgot-password", AuthController.forgotPassword)
+
 app.use("/api/v1", apiV1Routes)
 
 // Start server
