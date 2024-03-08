@@ -14,7 +14,6 @@ const authRoute = require("./routes/auth.routes.js")
 const todoRoute = require("./routes/todo.routes.js")
 const userRoute = require("./routes/user.routes.js")
 const AuthController = require("./controller/auth.controller.js")
-const AuthOTPController = require("./controller/authOTP.controller.js")
 
 const app = express()
 
@@ -37,7 +36,11 @@ app.use(
 )
 
 const corsOptions = {
-  origin: ["http://localhost:3000", "https://taskhub-web.netlify.app"],
+  origin: [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "https://taskhub-web.netlify.app",
+  ],
   methods: ["get", "put", "post", "patch", "delete"],
   preflightContinue: false,
   credentials: false,
@@ -71,8 +74,7 @@ apiV1Routes.use("/password", authRoute)
 apiV1Routes.use("/avatar", userRoute)
 
 //  forgot password Otp
-apiV1Routes.post("/send-otp", AuthController.sendForgotPasswordOtp)
-apiV1Routes.post("/password/forgot-password", AuthController.forgotPassword)
+apiV1Routes.use("/otp", authRoute)
 app.use("/api/v1", apiV1Routes)
 
 // Start server
