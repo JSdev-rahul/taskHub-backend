@@ -37,7 +37,7 @@ app.use(
 )
 
 const corsOptions = {
-  origin: "http://localhost:3001",
+  origin: ["http://localhost:3000", "https://taskhub-web.netlify.app"],
   methods: ["get", "put", "post", "patch", "delete"],
   preflightContinue: false,
   credentials: false,
