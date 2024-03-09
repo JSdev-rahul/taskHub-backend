@@ -11,6 +11,8 @@ This is a backend server application built with Node.js, Express.js, and MongoDB
 - **MongoDB Integration:** Integration with MongoDB database for storing and retrieving task data.
 - **Authentication:** Secure user authentication with JSON Web Tokens (JWT).
 - **Authorization:** Role-based access control to manage access to tasks.
+- **Google Authentication:** Allow users to sign in using their Google accounts.
+- **Email Password with OTP Verification:** Implement email-based password reset functionality with one-time password (OTP) verification.
 
 ## Technologies Used
 
@@ -24,11 +26,19 @@ This is a backend server application built with Node.js, Express.js, and MongoDB
 - **nodemailer:** Library for sending emails from Node.js applications.
 - **nodemon:** Utility that automatically restarts the server when changes are detected in the file system.
 - **cors:** Middleware for enabling Cross-Origin Resource Sharing (CORS) in Express.js applications.
-- **body-parser:** Middleware for parsing incoming request bodies in Express.js applications. -**morgon:** HTTP request logger middleware for node.js
+- **body-parser:** Middleware for parsing incoming request bodies in Express.js applications.
+- **morgon:** HTTP request logger middleware for node.js
+- **Cloudinary:**Cloud-based media management platform for uploading, storing, and managing files and media.
 
 ## Setup Instructions
 
+1. Clone the repository:https://github.com/JSdev-rahul/taskHub-backend.git
+
 ### Installation
+
+## Node Version
+
+This project was developed using **Node.js version 18.7.0**.
 
 Use the package manager [npm] to install all dependencies.
 
@@ -44,45 +54,80 @@ npm start
 
 ## API Routes
 
-- **GET /api/todos/:id:**
+- **GET /api/v1/todos/:id:**
 
   - Description: Get all todos for a specific user.
   - Authorization: Requires JWT token.
 
-- **POST /api/todos:**
+- **POST /api/v1/todos:**
 
   - Description: Create a new todo.
   - Authorization: Requires JWT token.
 
-- **DELETE /api/todos/:id:**
+- **DELETE /api/v1/todos/:id:**
 
   - Description: Delete a todo by ID.
   - Authorization: Requires JWT token.
 
-- **PATCH /api/todos/:id:**
+- **PATCH /api/v1/todos/:id:**
 
   - Description: Update a todo by ID.
   - Authorization: Requires JWT token.
 
-- **GET /api/users:**
+- **GET /api/v1/users:**
 
   - Description: Get all users.
   - Authorization: Requires JWT token.
 
-- **POST /api/users:**
+- **POST /api/v1/users:**
 
   - Description: Create a new user.
   - Authorization: Requires JWT token and file upload.
 
-- **DELETE /api/users/:id:**
+- **DELETE /api/v1/users/:id:**
 
   - Description: Delete a user account by ID.
   - Authorization: Requires JWT token.
 
-- **PATCH /api/users/:id:**
+- **PATCH /api/v1/users/:id:**
 
   - Description: Update user profile by ID.
   - Authorization: Requires JWT token and file upload.
 
-- **POST /api/login:**
-  - Description: Login user and generate JWT token.
+- **PATCH /api/v1/update-avatar**
+
+  - Description: Update user avatar.
+  - Authorization: Requires JWT token and file upload.
+
+### Authentication
+
+- **POST /api/v1/login:**
+
+  - **Description:** Login user and generate JWT token.
+
+- **POST /api/v1/login/google-auth:**
+
+  - **Description:** Login with Google authentication.
+
+- **PATCH /api/v1/password/update-password:**
+
+  - **Description:** Change user password.
+
+- **POST /api/v1/password/forgot-password:**
+
+  - **Description:** Initiate forgot password flow.
+
+- **POST /api/v1/otp/send-otp:**
+
+  - **Description:** Send OTP for verification.
+
+- **POST /api/v1/login/verify-otp:**
+
+  - **Description:** Verify OTP during login.
+
+- **POST /api/v1/login/regnrate-otp:**
+
+  - **Description:** Regenerate OTP during login.
+
+- **POST /api/v1/token/generate-access-token:**
+  - **Description:** Generate new access token.
