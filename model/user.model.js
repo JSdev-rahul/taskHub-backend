@@ -79,7 +79,7 @@ UserSchema.methods.comparePassword = async function (oldPassword) {
 UserSchema.methods.updatePassword = async function (newPassward) {
   const hashedNewPassword = hashedPassword(newPassward)
   this.password = hashedNewPassword
-  await this.save()
+  await this.save({ validateBeforeSave: false })
   return
 }
 

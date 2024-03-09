@@ -1,6 +1,6 @@
 const genrateTokens = require("./tokenGernrate")
 
-const sendLoginResponse = async (res, user) => {
+const sendLoginResponse = async (res, user, message) => {
   const { access_token, refresh_token } = await genrateTokens(user)
   user.password = undefined
   user.refreshToken = undefined
@@ -16,7 +16,7 @@ const sendLoginResponse = async (res, user) => {
       access_token,
       refresh_token,
       user,
-      message: "OTP verified",
+      message,
     })
 }
 

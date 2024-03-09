@@ -34,7 +34,8 @@ const AuthOTPController = {
       // Compare the provided OTP with the OTP from the database
       if (otpRecord?.otp === otp) {
         const user = await UserModel.findOne({ email })
-        await sendLoginResponse(res, user)
+
+        await sendLoginResponse(res, user, "OTP verified")
         AuthOTPController.deleteOTP(email, otp)
       } else {
         return res.status(400).json({ message: "Invalid OTP" })

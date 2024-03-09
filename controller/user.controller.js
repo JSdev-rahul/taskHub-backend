@@ -105,8 +105,7 @@ const UserController = {
 
       return res.status(200).json({ result, count: totalCount })
     } catch (error) {
-      console.log(error)
-      res.status(500).json(error.message)
+      return res.status(500).json(error.message)
     }
   },
   deleteUser: async (req, res) => {

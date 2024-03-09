@@ -12,6 +12,7 @@ const saveImageToFileSystem = require("../utils/saveImageToFileSystem")
 const sendGreetingEmail = require("../utils/greetingEmail")
 const sendLoginResponse = require("../utils/loginResponseToUser")
 const sendOtpToEmail = require("../utils/sendOtpToEmail")
+const sendForgotPasswordEmail = require("../utils/sendForgotPasswordEmail")
 
 // Environment variable
 const refreshTokenSecretKey = process.env.REFRESH_TOKEN_SECRET
@@ -72,7 +73,7 @@ const AuthController = {
         sendGreetingEmail(user)
       }
 
-      sendLoginResponse(res, user)
+      sendLoginResponse(res, user, "LogIn Successfull")
     } catch (error) {
       return res.status(500).json({ message: "Internal Server Error" })
     }
@@ -147,7 +148,8 @@ const AuthController = {
       const otp = genrateOTPHandler()
       AuthOTPController.savedOtp(email, otp)
       const userName = user?.name
-      sendOtpToEmail(userName, email, otp)
+      sendForgotPasswordEmail(userName, email, otp)
+      // sendOtpToEmail(userName, email, otp)
       return res.status(200).json({ message: "OTP send to register email Id" })
     } catch (error) {
       return res
